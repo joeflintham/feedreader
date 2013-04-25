@@ -4,18 +4,21 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="loadFeed.js"></script>
 <script type="text/javascript">
-        google.load("feeds", "1");
-	feedData = {
-	    feedUrl: 'http://news.bournemouth.ac.uk/feed?post-type=event',
-	    defaultImageUrl: 'http://assets.bournemouth.ac.uk/aqua-retrofit/images/news-default-small.jpg',
-	    defaultImageWidth: '153',
-	    defaultImageHeight: '102',
-	    defaultFeedWidth: '406'
-	}
-        function initialize() {
-                loadFeeds(feedData);
-        }
-        google.setOnLoadCallback(initialize);
+  google.load("feeds", "1");
+  feedData = {
+    feedUrl: 'http://news.bournemouth.ac.uk/feed?post-type=event',
+    defaultImageUrl: 'http://assets.bournemouth.ac.uk/aqua-retrofit/images/news-default-small.jpg',
+    defaultImageWidth: '153',
+    defaultImageHeight: '102',
+    defaultFeedWidth: '406',
+    feedContainerID: 'news-feed',
+    defaultLinkToSource: '', /* populate to override the 'read more' link href */
+    defaultSourceLinkText: '' /* poopulate to override the 'read more' link text */
+  }
+  function initialize() {
+    loadFeeds(feedData);
+  }
+  google.setOnLoadCallback(initialize);
 </script>
 <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
 </head>
@@ -25,7 +28,6 @@
 <h1>News</h1>
 
         <div id="news-feed"></div>
-        <p><a href="http://news.bournemouth.ac.uk/category/school/media/">Read more news from the Media School &raquo;</a></p>
 
 </div>
 

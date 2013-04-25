@@ -1,118 +1,132 @@
 
 
-/* Load the news listing */
+/* LOAD A FEED AND CONVERT TO HTML */
+
 function loadFeeds(feedData) {
+
+    /* exit quietly if no feed data / url is supplied */
     if ((!feedData && feedData.feedUrl)) return false;
+
     var feedUrl = feedData.feedUrl;
     var defaultImageUrl = feedData.defaultImageUrl;
     var defaultImageWidth = (feedData.defaultImageWidth) ? feedData.defaultImageWidth : 153;
     var defaultImageHeight = (feedData.defaultImageHeight) ? feedData.defaultImageHeight : 102;
     var defaultFeedWidth = (feedData.defaultFeedWidth) ? feedData.defaultFeedWidth : 406;
-    var newsTextWidth = defaultFeedWidth - defaultImageWidth - 14; 
-    var feedContainerID = (feedData.feedContainerID) ? feedData.feedContainerID : ''
- 
-	//feedUrl += '?nocache='+(new Date).getTime();	// uncomment this line if cache causes unreasonable delays
+    var itemTextWidth = defaultFeedWidth - defaultImageWidth - 14;         // accounts for margins etc
+    var feedContainerID = (feedData.feedContainerID) ? feedData.feedContainerID : '';
+    var defaultLinkToSource = (feedData.defaultLinkToSource) ? feedData.defaultLinkToSource : '';
+    var defaultSourceLinkText = (feedData.defaultSourceLinkText) ? feedData.defaultSourceLinkText : '';
+
     var feed = new google.feeds.Feed(feedUrl);
     feed.setNumEntries(10);
     feed.load(function(result) {
-	console.log(defaultFeedWidth)
+
 	if (!result.error) {
+
+	    /* read feed source / name */
+	    if (result.feed){
+		channelLink = (result.feed.link) ? result.feed.link : '';
+		channelDescription = (result.feed.description) ? result.feed.description : '';
+		channelTitle = (result.feed.title) ? result.feed.title : '';
+		linkToMore = (defaultLinkToSource) ? defaultLinkToSource : channelLink;
+		moreLinkText = (defaultSourceLinkText) ? defaultSourceLinkText : 'Read more from ' + channelTitle + ' - ' + channelDescription;
+	    }
+
+
+	    /* create a container for the feed, use passed in id or append to body */
 	    var container = document.getElementById(feedContainerID);
 	    if (!container) {
 		container = document.createElement("div");
 		document.body.appendChild(container);
 	    }
 	    container.style.width = defaultFeedWidth + "px";
+
+	    /* loop through items */
 	    for (var i = 0; i < result.feed.entries.length; i++) {
-		var entry = result.feed.entries[i];
-		var newsBlockEl = document.createElement("div");
+
+		/* get item data */
+		var entry = result.feed.entries[i];		
+		
+		/* create container for item */
+		var itemBlockEl = document.createElement("div");
 		var oddEvenClass = (i % 2) ? "table_even" : "table_odd";
-		newsBlockEl.setAttribute("class", "body_newsarticle "+oddEvenClass);
-		newsBlockText = document.createElement("div");
-		newsBlockText.setAttribute("class", "body_newstextarea");
-		newsBlockText.style.width = newsTextWidth + "px";
+		itemBlockEl.setAttribute("class", "body_article "+oddEvenClass);
 		
-		// Set up title and content elements
+		/* create container for news item text content */
+		itemBlockText = document.createElement("div");
+		itemBlockText.setAttribute("class", "body_itemtextarea");
+		itemBlockText.style.width = itemTextWidth + "px";
 		
+		/* Set up title and content elements */
 		var titleEl = document.createElement("a");
 		var bodyEl = document.createElement("p");
 		var dateEl = document.createElement("span");
 				
-			// Set up title element
-			titleEl.setAttribute("href", entry.link);
-			titleEl.setAttribute("title", entry.title);
-			titleEl.setAttribute("class", "body_newsarticle_title");
-			titleEl.appendChild(document.createTextNode(entry.title));
-			newsBlockText.appendChild(titleEl);
+		/* Set up title element */
+		titleEl.setAttribute("href", entry.link);
+		titleEl.setAttribute("title", entry.title);
+		titleEl.setAttribute("class", "body_itemarticle_title");
+		titleEl.appendChild(document.createTextNode(entry.title));
+		itemBlockText.appendChild(titleEl);
 				
-			// Set up date element
-			dateEl.setAttribute("class", "body_smalltext");
-			dateEl.appendChild(document.createTextNode(formatDate(new Date(entry.publishedDate))));
-			newsBlockText.appendChild(dateEl);
-				
-			// Set up content element
-			bodyEl.setAttribute("class", "body_featurebox2_text");
-			bodyEl.innerHTML = entry.content;
+		/* Set up date element */
+		dateEl.setAttribute("class", "body_smalltext item_date");
+		dateEl.appendChild(document.createTextNode(formatDate(new Date(entry.publishedDate))));
+		itemBlockText.appendChild(dateEl);
+			
+		/* Set up content element */
+		bodyEl.setAttribute("class", "body_featurebox2_text");
+		bodyEl.innerHTML = entry.content;
 
-			var imgEls = bodyEl.getElementsByTagName("IMG");
-			if (imgEls.length == 0 && defaultImageUrl != '') {
-			    imgEls = [];
-			    imgEls[0] = document.createElement("img");
-			    imgEls[0].setAttribute("src", defaultImageUrl);
-			}
-			if (imgEls.length > 0) { 
-			    imgEls[0].setAttribute("width", defaultImageWidth);
-			    imgEls[0].setAttribute("height", defaultImageHeight);
-			    imgEls[0].setAttribute("alt", entry.title);
-			    newsBlockEl.appendChild(imgEls[0]); 
-			}
-
-
-
-			newsBlockEl.appendChild(newsBlockText);
-			newsBlockText.appendChild(bodyEl);
-			newsBlockEl.innerHTML += "<br class='clear' />";
-		        container.appendChild(newsBlockEl);
+		/* set up image */
+		var imgEls = bodyEl.getElementsByTagName("IMG");
+		if (imgEls.length == 0 && defaultImageUrl != '') { 
+		    /* feed contains no image but a default image has been set */
+		    imgEls = [];
+		    imgEls[0] = document.createElement("img");
+		    imgEls[0].setAttribute("src", defaultImageUrl);
 		}
+		if (imgEls.length > 0) { 
+		    imgEls[0].setAttribute("width", defaultImageWidth);
+		    imgEls[0].setAttribute("height", defaultImageHeight);
+		    imgEls[0].setAttribute("alt", entry.title);
+		    itemBlockEl.appendChild(imgEls[0]); 
+		}
+
+		/* set up news text content */
+		itemBlockEl.appendChild(itemBlockText);
+		itemBlockText.appendChild(bodyEl);
+		itemBlockEl.innerHTML += "<br class='clear' />";
+	        
+		/* add item to feed container */
+		container.appendChild(itemBlockEl);
+	    }
+
+	    /* 'more' link */
+	    if (linkToMore != ''){
+		moreEl = document.createElement("p");
+		moreEl.setAttribute("class", "link_to_more");
+		    
+		moreLinkEl = document.createElement("a");
+		moreLinkEl.setAttribute("href", linkToMore);
+		moreLinkEl.appendChild(document.createTextNode(moreLinkText));
+		moreEl.appendChild(moreLinkEl);
+		container.appendChild(moreEl);
+	    }
+
+
 	}
-});	
+    });
 }
 
-/* Load the index page news list */
-function loadIndexFeeds(feedUrl, numEntries) {
-	var feed = new google.feeds.Feed(feedUrl);
-	feed.setNumEntries(numEntries);
-	feed.load(function(result) {
-		if (!result.error) {
-			var container = document.getElementById("index-news-feed");
-			for (var i = 0; i < result.feed.entries.length; i++) {
-				var entry = result.feed.entries[i];
-				var newsBlockEl = document.createElement("li");
-				newsBlockEl.innerHTML = "&raquo; ";
-				
-				// Set up title element
-				var titleEl = document.createElement("a");
-				
-				// Set up title element
-				titleEl.setAttribute("href", entry.link);
-				titleEl.setAttribute("title", entry.title);
-				titleEl.appendChild(document.createTextNode(entry.title));
-				newsBlockEl.appendChild(titleEl);
-				
-				container.appendChild(newsBlockText);
-			}
-		}
-	});	
-}
 
-/** 
+/**
  * Format a date as DD MMMM YYYY
- */  
+ */
 formatDate = function(date) {   
-	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];  
-
-	var hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();  
-	return date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();  
+    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];  
+    var hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();  
+    return date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();  
 } 
 
 
