@@ -5,8 +5,15 @@
 <script type="text/javascript" src="loadFeed.js"></script>
 <script type="text/javascript">
         google.load("feeds", "1");
+	feedData = {
+	    feedUrl: 'http://news.bournemouth.ac.uk/feed?post-type=event',
+	    defaultImageUrl: 'http://assets.bournemouth.ac.uk/aqua-retrofit/images/news-default-small.jpg',
+	    defaultImageWidth: '153',
+	    defaultImageHeight: '102',
+	    defaultFeedWidth: '406'
+	}
         function initialize() {
-                loadFeeds("http://news.bournemouth.ac.uk/category/school/media/feed/");
+                loadFeeds(feedData);
         }
         google.setOnLoadCallback(initialize);
 </script>
