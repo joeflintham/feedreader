@@ -1,0 +1,82 @@
+BU M&C Feedreader for news and events
+_____________________________________
+
+Joe Flintham, adapted from Paul Hughes, 2013
+
+--------------------------------------------
+
+The feedreader should work straight out of the box: point your browser at the local ~/feedreader/index.html file and your browser should display the upcoming events in the BU News & Events site.
+
+The feedreader can be embedded into a webpage as follows:
+
+Ensure the target webpage loads the following Javascript sources:
+
+// Google's Javascript API
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+// The feedreader script loadFeed.js
+<script type="text/javascript" src="loadFeed.js"></script>
+
+Include the sollowing Javascript snippet inide some script tags in your HTML document:
+
+// Default settings and Google feeds activation
+<script type="text/javascript">
+  google.load("feeds", "1");
+  feedData = {
+    feedUrl: 'http://news.bournemouth.ac.uk/feed?post-type=event',
+    defaultImageUrl: 'http://assets.bournemouth.ac.uk/aqua-retrofit/images/news-default-small.jpg',
+    defaultImageWidth: '153', 
+    defaultImageHeight: '102',
+    defaultFeedWidth: '406', /* control the overall width of the feed display */
+    defaultTextColumnWidth: '233', /* width must be set to make text column sit alongside preview image */
+    feedContainerID: 'news-feed', /* specify the id of the node to which the feed content should be appended */
+    defaultLinkToSource: '', /* populate to override the 'read more' link href */
+    defaultSourceLinkText: '' /* poopulate to override the 'read more' link text */
+  }
+  function initialize() {
+    loadFeeds(feedData);
+  }
+  google.setOnLoadCallback(initialize);
+</script>
+
+All of the feedData settings can be overridden to make the feed display as configurable and flexible as possible.
+
+Default styles are supplied in the local stylesheet styles.css:
+
+<link rel="stylesheet" type="text/css" media="all" href="styles.css" />
+
+- or you can copy them into a stylesheet to be stored elsewhere:
+
+.body_itemtextarea {
+    float: left;
+    margin-left: 2px;
+}
+.body_article {
+	padding:3px 5px;
+	min-height:105px;
+	clear:both;
+}
+.body_article img, .body_article a, .body_article p, .body_article span {
+	float:left;
+}
+.body_article a, .body_article p, .body_article span {
+	display:block;
+}
+.body_article img {
+	border:1px solid #ccc;
+}
+.body_smalltext {
+    display: block;
+    clear: left;
+}
+#masterpage_center .body_article span.body_smalltext, #masterpage_center .body_article p.body_featurebox2_text {
+	margin:0 8px 2px;
+}
+
+
+
+
+Finally you can either supply the id of a node to which the feed contents should be appended: e.g. -
+
+<div id="news-feed"></div>
+
+- or if no id is supplied, the feed contents will be attached to the document body. 

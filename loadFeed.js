@@ -12,7 +12,7 @@ function loadFeeds(feedData) {
     var defaultImageWidth = (feedData.defaultImageWidth) ? feedData.defaultImageWidth : 153;
     var defaultImageHeight = (feedData.defaultImageHeight) ? feedData.defaultImageHeight : 102;
     var defaultFeedWidth = (feedData.defaultFeedWidth) ? feedData.defaultFeedWidth : 406;
-    var itemTextWidth = defaultFeedWidth - defaultImageWidth - 14;         // accounts for margins etc
+    var defaultTextColumnWidth = (feedData.defaultTextColumnWidth) ? feedData.defaultTextColumnWidth : 233;
     var feedContainerID = (feedData.feedContainerID) ? feedData.feedContainerID : '';
     var defaultLinkToSource = (feedData.defaultLinkToSource) ? feedData.defaultLinkToSource : '';
     var defaultSourceLinkText = (feedData.defaultSourceLinkText) ? feedData.defaultSourceLinkText : '';
@@ -55,7 +55,7 @@ function loadFeeds(feedData) {
 		/* create container for news item text content */
 		itemBlockText = document.createElement("div");
 		itemBlockText.setAttribute("class", "body_itemtextarea");
-		itemBlockText.style.width = itemTextWidth + "px";
+		itemBlockText.style.width = defaultTextColumnWidth + "px";
 		
 		/* Set up title and content elements */
 		var titleEl = document.createElement("a");
