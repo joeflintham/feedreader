@@ -16,7 +16,7 @@ Ensure the target webpage loads the following Javascript sources:
 // The feedreader script loadFeed.js
 <script type="text/javascript" src="loadFeed.js"></script>
 
-Include the sollowing Javascript snippet inside some script tags in your HTML document:
+Include the following Javascript snippet inside some script tags in your HTML document:
 
 // Default settings and Google feeds activation
 <script type="text/javascript">
@@ -40,7 +40,7 @@ Include the sollowing Javascript snippet inside some script tags in your HTML do
 
 All of the feedData settings can be overridden to make the feed display as configurable and flexible as possible.
 
-For maximum responsiveness put your Javascript script tags at the end of the page after all of the page content. This means that most browsers will render the existing page content wihtout waiting for external Javascript files to load, and will improve the perceived speed of the page load.
+For maximum responsiveness put your Javascript script tags at the end of the page after all of the page content. This means that most browsers will render the existing page content without waiting for external Javascript files to load, and will improve the perceived speed of the page load.
 
 Default styles are supplied in the local stylesheet styles.css:
 
@@ -70,11 +70,8 @@ Default styles are supplied in the local stylesheet styles.css:
     display: block;
     clear: left;
 }
-#masterpage_center .body_article span.body_smalltext, #masterpage_center .body_article p.body_featurebox2_text {
-	margin:0 8px 2px;
-}
 
-The feed contant styles only specify layout and spacing; any other styles for text, headings etc will be inherited from whatever other stylesheets are included in your page.
+The feed content styles only specify layout and spacing; any other styles for text, headings etc will be inherited from whatever other stylesheets are included in your page.
 
 Finally you can either supply the id of a node to which the feed contents should be appended: e.g. -
 
